@@ -42,6 +42,8 @@ def getDf_from_google_sheet_json(resp_json):
     return transformData(df)
 
 def filter_last_x_months(df, x):
+    if x == 0:
+        return df
     today = datetime.today()
     x_months_ago = today - relativedelta(months=x)
     temp_df = df.copy()
@@ -50,7 +52,7 @@ def filter_last_x_months(df, x):
 
 def getDf_present_rate(df, prenset, absent, leave):
     result = pd.DataFrame()
-    for column in df.columns[2:]:
+    for column in df.columns[1:]:
         present_count = df[column].value_counts().get(prenset, 0)
         absent_count = df[column].value_counts().get(absent, 0)
         leave_count = df[column].value_counts().get(leave, 0)
@@ -63,6 +65,7 @@ def getDf_present_rate(df, prenset, absent, leave):
     result['Present Count'] = result['Present Count'].astype(int)
     result['Absent Count'] = result['Absent Count'].astype(int)
     result['Leave Count'] = result['Leave Count'].astype(int)
+    result = result.sort_index()
     return result
 
 def display_dashboard(dataFile: str = None):
@@ -71,33 +74,29 @@ def display_dashboard(dataFile: str = None):
         df.fillna("", inplace=True)
     else:
         df = getDf_from_google_sheet_json(getDataJson(default_url))
-        
-    present_rate_df = getDf_present_rate(df, present, absent, leave)
-    filtered_3_df = filter_last_x_months(df,3)
-    present_rate_3_df = getDf_present_rate(filtered_3_df, present, absent, leave)
-    filtered_6_df = filter_last_x_months(df,6)
-    present_rate_6_df = getDf_present_rate(filtered_6_df, present, absent, leave)
-    filtered_9_df = filter_last_x_months(df,9)
-    present_rate_9_df = getDf_present_rate(filtered_9_df, present, absent, leave)
-    filtered_12_df = filter_last_x_months(df,12)
-    present_rate_12_df = getDf_present_rate(filtered_12_df, present, absent, leave)
-    df_description_list = [present_rate_3_df, present_rate_6_df, present_rate_9_df, present_rate_12_df, present_rate_df]
 
-# Display the DataFrame as a table with centering style
+    x_months = [i for i in range(0,13,3)]
+    x_months =  x_months[1:] + [x_months[0]]
+    df_description_list = []
+    for x in x_months:
+        df_description_list.append(getDf_present_rate(filter_last_x_months(df,x), present, absent, leave))
+
+    # Display the DataFrame as a table with centering style
     st.header('Present Rate', divider='rainbow')
     for index, tab in enumerate(st.tabs(template_list)):
         with tab:
             st.header(template_list[index])
             with st.container():
-                st.dataframe(df_description_list[index], use_container_width=True)
+                height = (len(df_description_list[index]) + 1) * 35 + 3
+                st.dataframe(df_description_list[index], use_container_width=True, height=height)
 
-    st.header('Cumulative Sum', divider='rainbow')
-    with st.container():
-        plot_df = present_rate_df.copy()
-        plot_df.reset_index(inplace=True)
-        plot_df.columns = ['Name', 'Present Count', 'Absent Count', 'Leave Count', 'Present Rate (%)']
-        fig = px.histogram(plot_df, x = "Name", y = ["Present Count", "Absent Count", "Leave Count"])
-        st.plotly_chart(fig)
+            st.header('Cumulative Sum', divider='rainbow')
+            with st.container():
+                plot_df = df_description_list[index].copy()
+                plot_df.reset_index(inplace=True)
+                plot_df.columns = ['Name', 'Present Count', 'Absent Count', 'Leave Count', 'Present Rate (%)']
+                fig = px.histogram(plot_df, x = "Name", y = ["Present Count", "Absent Count", "Leave Count"])
+                st.plotly_chart(fig)
 
 st.title("Attendance (Demo)")
 uploaded_file = st.sidebar.file_uploader("Upload an Excel file", type=["xlsx", "xls"])
