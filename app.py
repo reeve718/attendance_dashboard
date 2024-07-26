@@ -7,7 +7,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 st.set_page_config(layout="wide", page_title="Dashboard", page_icon="📈")
-default_url = "https://script.googleusercontent.com/macros/echo?user_content_key=CS1xGtawxafbsz_VXLceDZ8YhZJ3WLRGo3cTurMdyLFpRky5qzeXoqZBrYuJ0ElreSkNapo1i9TRXgBoQpou4xhHPHjfNUj4m5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnNGpsruz596piGbFJMaeWeZjFnhN0a9d4HwmOCyefi3ex5PPcpNsPlxGCUpGq7rwIA3gVkC6Pkbl8Md7CuyY-jH4-8QW02051A&lib=McNoStEX3P6w1EymfWUjOXqNKe58B53cM"
+default_url = "https://script.google.com/macros/s/AKfycbwiXeLnWZAHUQF2J_8WWYO5rhdaBMW9FVFsCJ7d3Vd_Bnjrya6Glj0h_OH2wspQLDVn/exec"
 template_list = [ "Last 3 Months", "Last 6 Months", "Last 9 Months", "Last 12 Months","Overall"]
 present = "出席"
 absent = "缺席"
@@ -98,7 +98,7 @@ def display_dashboard(dataFile: str = None):
                 fig = px.histogram(plot_df, x = "Name", y = ["Present Count", "Absent Count", "Leave Count"])
                 st.plotly_chart(fig)
 
-st.title("Attendance (Demo)")
+st.title("Attendance")
 uploaded_file = st.sidebar.file_uploader("Upload an Excel file", type=["xlsx", "xls"])
 
 # Main content
