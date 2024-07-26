@@ -7,7 +7,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 st.set_page_config(layout="wide", page_title="Dashboard", page_icon="📈")
-default_url = "https://script.google.com/macros/s/AKfycbwiXeLnWZAHUQF2J_8WWYO5rhdaBMW9FVFsCJ7d3Vd_Bnjrya6Glj0h_OH2wspQLDVn/exec"
+default_url = "https://script.google.com/macros/s/AKfycby0GYKbkWWVtkaBVd8qZYGLPrsXCfAPIOvezbcqxlmeUffzp5ThspGPPUDNQWt7Nrr_/exec"
 template_list = [ "Last 3 Months", "Last 6 Months", "Last 9 Months", "Last 12 Months","Overall"]
 present = "出席"
 absent = "缺席"
