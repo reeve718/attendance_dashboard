@@ -56,7 +56,7 @@ def getDf_present_rate(df, prenset, absent, leave):
         present_count = df[column].value_counts().get(prenset, 0)
         absent_count = df[column].value_counts().get(absent, 0)
         leave_count = df[column].value_counts().get(leave, 0)
-        total_count = present_count + absent_count + leave_count
+        total_count = present_count + absent_count
         present_rate = (present_count / total_count * 100) if total_count > 0 else 0
         result.loc[column, 'Present Count'] = present_count
         result.loc[column, 'Absent Count'] = absent_count
