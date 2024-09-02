@@ -13,7 +13,7 @@ present = "出席"
 absent = "缺席"
 leave = "請假"
 
-@st.cache_data
+#@st.cache_data
 def getDataJson(url):
     resp = requests.get(url)
     resp_json = resp.json()
@@ -32,7 +32,8 @@ def transformData(df):
     cols = [cols[-1]] + cols[:-1]
     output_df = df[cols].copy()
     return output_df
-@st.cache_data
+
+#@st.cache_data
 def getDf_from_file(filePath):
     df = pd.read_excel(filePath)
     return transformData(df)
@@ -100,7 +101,7 @@ def display_dashboard(dataFile: str = None):
 
 st.title("Attendance")
 uploaded_file = st.sidebar.file_uploader("Upload an Excel file", type=["xlsx", "xls"])
-
+st.sidebar.write('v1.1.0')
 # Main content
 if uploaded_file is None:
     
